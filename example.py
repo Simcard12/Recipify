@@ -4,14 +4,14 @@ from recipify.extraction import parse_receipt_data
 import cv2
 
 # Path to the receipt image
-image_path = "examples/1.jpg"
+image_path = "examples/5.jpg"
 
 # Step 1: Preprocess the receipt image
 print("Preprocessing the receipt image...")
 preprocessed_image = preprocess_image(image_path)
 
 # Save and inspect the preprocessed image
-cv2.imwrite("preprocessed_receipt_1.jpg", preprocessed_image)
+cv2.imwrite("preprocessed_receipt_5.jpg", preprocessed_image)
 print("Preprocessed image saved as 'preprocessed_receipt.jpg'.")
 
 # Step 2: Perform OCR on the preprocessed image

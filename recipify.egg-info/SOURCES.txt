@@ -9,7 +9,3 @@ recipify.egg-info/SOURCES.txt
 recipify.egg-info/dependency_links.txt
 recipify.egg-info/requires.txt
 recipify.egg-info/top_level.txt
-tests/__init__.py
-tests/test_extraction.py
-tests/test_ocr.py
-tests/test_preprocessing.py
