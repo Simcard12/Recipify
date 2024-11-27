@@ -42,10 +42,11 @@ def parse_walmart_receipt(text):
         data["vendor"] = "Walmart"
 
         # Extract total amount
-        total_match = re.search(r"TOTAL PURCHASE\s*[:\-]?\s*([\d.]+)", text, re.IGNORECASE)
+        total_match = re.search(r"TOTAL\s*[:\-]?\s*\$?([\d.]+)", text, re.IGNORECASE)
         if total_match:
             data["total"] = float(total_match.group(1))
-
+        else:
+            print("WARNING: Could not extract total amount.")
         # Extract date (e.g., MM/DD/YY)
         date_match = re.search(r"\d{2}/\d{2}/\d{2}", text)
         if date_match:

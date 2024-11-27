@@ -1,19 +1,26 @@
-import joblib
-
-# Load the trained model and vectorizer
-model = joblib.load("saved_models/receipt_classifier.pkl")
-vectorizer = joblib.load("saved_models/vectorizer.pkl")
+import re
 
 def classify_receipt(text):
     """
-    Classifies a receipt based on its OCR text.
+    Classifies the receipt type based on the OCR-extracted text.
 
     Args:
         text (str): The OCR-extracted text from the receipt.
 
     Returns:
-        str: The predicted receipt type.
+        str: The type of the receipt ("Walmart", "Cafeteria", or "Unknown").
     """
-    text_transformed = vectorizer.transform([text])
-    receipt_type = model.predict(text_transformed)[0]
-    return receipt_type
+    try:
+        # Check for keywords unique to Walmart receipts
+        if re.search(r"\bWalmart\b", text, re.IGNORECASE):
+            return "Walmart"
+
+        # Check for keywords unique to Cafeteria receipts
+        if re.search(r"\bCafeteria\b", text, re.IGNORECASE):
+            return "Cafeteria"
+
+        # Default to "Unknown" if no keywords match
+        return "Unknown"
+
+    except Exception as e:
+        raise RuntimeError(f"Error classifying receipt: {e}")

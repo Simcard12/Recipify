@@ -22,7 +22,7 @@ def preprocess_image(image_path):
         blurred = cv2.GaussianBlur(gray, (3, 3), 1)
 
         # 4. Apply binary thresholding for clean text
-        _, binary = cv2.threshold(blurred, 122, 200, cv2.THRESH_BINARY)
+        _, binary = cv2.threshold(blurred, 120, 240, cv2.THRESH_BINARY)
 
         # 5. Use morphology to enhance text regions
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 1))
