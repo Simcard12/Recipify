@@ -19,13 +19,13 @@ def preprocess_image(image_path):
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
         # 3. Apply Gaussian blur to reduce noise
-        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        blurred = cv2.GaussianBlur(gray, (3, 3), 1)
 
         # 4. Apply binary thresholding for clean text
-        _, binary = cv2.threshold(blurred, 150, 255, cv2.THRESH_BINARY)
+        _, binary = cv2.threshold(blurred, 122, 200, cv2.THRESH_BINARY)
 
         # 5. Use morphology to enhance text regions
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 1))
         processed = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
 
         return processed

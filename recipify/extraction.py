@@ -13,8 +13,8 @@ def parse_receipt_data(text):
     data = {}
 
     try:
-        # Extract total amount
-        total_amount_match = re.search(r"Total\s*\(INR\)\s*=\s*([\d.]+)", text, re.IGNORECASE)
+        # Extract total amount (handle both "INR" and "INK")
+        total_amount_match = re.search(r"Total\s*\(IN[RK]\)\s*=\s*([\d.]+)", text, re.IGNORECASE)
         if total_amount_match:
             data["total"] = float(total_amount_match.group(1))
 
