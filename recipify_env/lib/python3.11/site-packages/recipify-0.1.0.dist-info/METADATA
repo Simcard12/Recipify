@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: recipify
+Version: 0.1.0
+Requires-Dist: opencv-python
+Requires-Dist: pytesseract
+Requires-Dist: imutils
+Requires-Dist: numpy
+Requires-Dist: pandas
