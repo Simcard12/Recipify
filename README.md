@@ -46,7 +46,7 @@ recipify-demo --image <path_to_receipt_image> --weights <path_to_yolo_weights>
 
 Example:
 ```bash
-recipify-demo --image example_receipt.jpg --weights yolov8_best.pt
+recipify-demo --image example_receipt.jpg --weights yolo11n.pt
 ```
 
 ### **2. Train the YOLO11 Model**
