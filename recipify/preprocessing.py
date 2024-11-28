@@ -21,8 +21,13 @@ def preprocess_image(image_path):
         # 3. Apply Gaussian blur to reduce noise
         blurred = cv2.GaussianBlur(gray, (3, 3), 1)
 
-        # 4. Apply binary thresholding for clean text
-        _, binary = cv2.threshold(blurred, 120, 240, cv2.THRESH_BINARY)
+        # 4. Use Adaptive Thresholding or Otsu's Binarization
+        # Try adaptive thresholding
+        #binary = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+                                       #cv2.THRESH_BINARY, 11, 2)
+
+        # Alternatively, you can use Otsu's method if adaptive thresholding doesn't work well
+        _, binary = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
         # 5. Use morphology to enhance text regions
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 1))
