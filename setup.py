@@ -10,9 +10,9 @@ setup(
         'numpy',                 # For numerical operations
         'pandas',                # For data handling (if used in results)
         'ultralytics',           # For YOLOv11 object detection
-        'spacy',                 # For NLP (if using NER or rule-based parsing)
-        'torch',                 # PyTorch backend for YOLOv11
-        'transformers',          # For advanced NLP models (if needed)
+        #'spacy',                 # For NLP (if using NER or rule-based parsing)
+        #'torch',                 # PyTorch backend for YOLOv11
+        #'transformers',          # For advanced NLP models (if needed)
         'lxml',                  # For parsing XML in dataset_processing.py
     ],
     extras_require={

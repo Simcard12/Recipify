@@ -15,20 +15,34 @@ def detect_receipt_elements(model, image_path):
     Detects receipt elements using YOLOv11.
 
     Args:
-        model: Loaded YOLO model.
+        model: Loaded YOLOv11 model.
         image_path (str): Path to the receipt image.
 
     Returns:
         list[dict]: Detected elements with labels and bounding boxes.
     """
-    results = model(image_path)
+    # Run inference
+    results = model(image_path)  # Returns a list of Results objects
+    
+    # Check if results are non-empty
+    if not results:
+        print("No detections.")
+        return []
+
+    # YOLOv11 returns a list; process the first result
+    result = results[0]
+    
     detections = []
-    for box in results.boxes:
-        detections.append({
-            "label": results.names[int(box.cls[0])],
-            "confidence": box.conf[0].item(),
-            "coordinates": box.xyxy[0].tolist()  # [x1, y1, x2, y2]
-        })
+    if hasattr(result, "boxes"):
+        for box in result.boxes:
+            detections.append({
+                "label": result.names[int(box.cls[0])],  # Class label
+                "confidence": box.conf[0].item(),        # Confidence score
+                "coordinates": box.xyxy[0].tolist()      # Bounding box coordinates
+            })
+    else:
+        print("No bounding boxes found in results.")
+    
     return detections
 
 def main(image_path, yolo_weights):
@@ -38,7 +52,7 @@ def main(image_path, yolo_weights):
     print("Preprocessed image created.")
 
     # Step 2: Detect elements using YOLO
-    print("Running YOLOv8 detection...")
+    print("Running YOLOv11 detection...")
     model = load_yolo_model(yolo_weights)
     detections = detect_receipt_elements(model, image_path)
     print(f"Detections: {detections}")
@@ -72,6 +86,6 @@ def main(image_path, yolo_weights):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Receipt Scanner Demo")
     parser.add_argument("--image", type=str, required=True, help="Path to the receipt image")
-    parser.add_argument("--weights", type=str, required=True, help="Path to the YOLOv8 model weights")
+    parser.add_argument("--weights", type=str, required=True, help="Path to the YOLOv11 model weights")
     args = parser.parse_args()
     main(args.image, args.weights)

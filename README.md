@@ -1,15 +1,15 @@
 # **Recipify**
 
-**Recipify** is a receipt data extraction system designed to process receipt images and extract key details such as vendor name, total amount, items, and date/time. The project leverages **YOLOv5** for object detection and **Tesseract OCR** for text recognition, combining the two to handle receipts of varying formats.
+**Recipify** is a powerful receipt data extraction tool that combines **YOLO11** for object detection and **Tesseract OCR** for text recognition. It automatically extracts key information from receipt images, such as vendor names, total amounts, items, and dates, to help you keep track of your expenses.
 
 ---
 
 ## **Features**
-- **Image Preprocessing**: Enhances receipt images for improved OCR accuracy.
-- **Object Detection**: Uses YOLOv5 to detect receipt elements such as the shop name, total, items, and date/time.
-- **Text Recognition**: Extracts text from receipts using Tesseract OCR.
-- **Receipt Classification**: Automatically classifies receipts into predefined types (e.g., Walmart, Cafeteria).
-- **Data Parsing**: Parses and organizes extracted information into structured data.
+- **YOLO11 Object Detection**: Detects receipt elements like shop names, total amounts, dates, and items.
+- **Tesseract OCR**: Extracts textual data from the receipt images.
+- **Advanced Preprocessing**: Enhances image quality for better OCR and object detection.
+- **Dataset Conversion**: Converts annotated receipt datasets into YOLO format for training.
+- **CLI Support**: Easy-to-use command-line interface for running the demo.
 
 ---
 
@@ -28,28 +28,30 @@ python -m venv recipify_env
 source recipify_env/bin/activate  # On Windows: recipify_env\Scripts\activate
 ```
 
-### **3. Install Dependencies**
-Install the required Python packages:
+### **3. Install Recipify**
+Install the project and its dependencies:
 ```bash
-pip install -r requirements.txt
-```
-
-### **4. Download YOLOv5**
-Clone the YOLOv5 repository into the project directory:
-```bash
-git clone https://github.com/ultralytics/yolov5.git
-cd yolov5
-pip install -r requirements.txt
-cd ..
+pip install -e .
 ```
 
 ---
 
 ## **Usage**
 
-### **1. Prepare the Dataset**
-If you want to train YOLOv5 on your dataset:
-1. Organize your dataset as follows:
+### **1. Run the Demo**
+To process a receipt image and extract details:
+```bash
+recipify-demo --image <path_to_receipt_image> --weights <path_to_yolo_weights>
+```
+
+Example:
+```bash
+recipify-demo --image example_receipt.jpg --weights yolov8_best.pt
+```
+
+### **2. Train the YOLO11 Model**
+If you want to train YOLO11 on a custom dataset:
+1. Ensure your dataset is structured as follows:
    ```
    dataset/
    ├── train/
@@ -59,26 +61,19 @@ If you want to train YOLOv5 on your dataset:
    │   ├── images/
    │   └── labels/
    ```
-2. Update the `dataset.yaml` file in the YOLOv5 folder with paths to your dataset.
 
-### **2. Train the YOLOv5 Model**
-Train the YOLOv5 model on your dataset:
-```bash
-python yolov5/train.py --data dataset.yaml --cfg yolov5s.yaml --weights yolov5s.pt --epochs 50
-```
+2. Update `dataset.yaml`:
+   ```yaml
+   train: dataset/train/images
+   val: dataset/val/images
+   nc: 5
+   names: ['shop', 'item', 'total', 'date_time', 'receipt']
+   ```
 
-### **3. Run the Demo**
-To process a receipt image and extract data:
-```bash
-python demo.py --image <path_to_receipt_image>
-```
-
-Example:
-```bash
-python demo.py --image example_receipt.jpg
-```
-
-**Output**: A structured JSON-like summary of the receipt details will be displayed.
+3. Train the model:
+   ```bash
+   python -m ultralytics.yolo train --data dataset.yaml --weights yolo11n.pt --epochs 50
+   ```
 
 ---
 
@@ -87,43 +82,83 @@ python demo.py --image example_receipt.jpg
 Recipify/
 ├── recipify/
 │   ├── __init__.py
-│   ├── preprocessing.py      # Image preprocessing code
-│   ├── ocr.py                # Text extraction using Tesseract
-│   ├── classification.py     # Classifies receipt type (e.g., Walmart, Cafeteria)
-│   ├── extraction.py         # Parses receipt data based on type
-│   └── dataset_processing.py # Converts annotated datasets for YOLOv5
-├── yolov5/                   # YOLOv5 model
-├── dataset/                  # Dataset for YOLOv5 (images and labels)
-├── examples/                 # Example scripts and sample images
-├── requirements.txt          # Python dependencies
-└── README.md                 # Project documentation
+│   ├── preprocessing.py       # Image preprocessing for OCR
+│   ├── ocr.py                 # Text extraction using Tesseract
+│   ├── classification.py      # Receipt type classification
+│   ├── extraction.py          # Data parsing and extraction
+│   ├── dataset_processing.py  # Convert annotations to YOLO format
+│   ├── train.py
+│   ├── dataset.yaml
+├── dataset/                   # Custom dataset (images and labels)
+├── requirements.txt           # Python dependencies
+├── setup.py                   # Installation configuration
+└── README.md                  # Project documentation
 ```
+
+---
+
+## **Model Evaluation**
+
+### **Confusion Matrix**
+![Confusion Matrix](runs/detect/train2/confusion_matrix_normalized.png)
+
+### **Precision-Recall Curve**
+![Precision-Recall Curve](runs/detect/train2/PR_curve.png)
+
+### **F1-Score Curve**
+![F1-Score Curve](runs/detect/train2/F1_curve.png)
+
+### **Loss Curves**
+![Box Loss](runs/detect/train2/results.png)
+
+---
+
+## **Development and Contribution**
+
+### **Testing**
+- Run tests with `pytest`:
+  ```bash
+  pytest
+  ```
+
+### **Contributions**
+Contributions are welcome! To contribute:
+1. Fork the repository.
+2. Create a new branch:
+   ```bash
+   git checkout -b feature-branch
+   ```
+3. Commit your changes:
+   ```bash
+   git commit -m "Add a new feature"
+   ```
+4. Push the branch:
+   ```bash
+   git push origin feature-branch
+   ```
+5. Open a pull request.
 
 ---
 
 ## **Dependencies**
 - **Python 3.9+**
+- **YOLO11**: Ultralytics for object detection.
+- **Tesseract OCR**: For text extraction.
+- **SpaCy**: For named entity recognition (NER).
 - **OpenCV**: For image preprocessing.
-- **Tesseract OCR**: For text recognition.
-- **YOLOv5**: For object detection.
-- **PyTorch**: For training and inference.
+
+Install all dependencies via:
+```bash
+pip install -r requirements.txt
+```
 
 ---
 
 ## **Acknowledgments**
-- **YOLOv5**: Ultralytics for the object detection framework.
-- **Tesseract OCR**: Google for the text recognition engine.
-- Various open-source datasets for receipts.
-
----
-
-## **Contributing**
-Contributions are welcome! If you want to improve the project:
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Commit your changes (`git commit -m "Add feature"`).
-4. Push to the branch (`git push origin feature-branch`).
-5. Open a pull request.
+- **Ultralytics**: For the YOLO11 model.
+- **Google**: For Tesseract OCR.
+- **OpenCV**: For powerful image processing capabilities.
+- **Community**: For contributing open datasets for receipts.
 
 ---
 
