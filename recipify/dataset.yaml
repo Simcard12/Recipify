@@ -1,0 +1,4 @@
+train: /Users/subhashgottumukkala/Developer/GitHub/Recipify/dataset/train/images  # Path to training images
+val: /Users/subhashgottumukkala/Developer/GitHub/Recipify/dataset/val/images      # Path to validation images
+nc: 5  # Number of classes
+names: ['shop', 'item', 'total', 'date_time', 'receipt']  # Class names
