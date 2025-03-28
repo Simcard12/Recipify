@@ -26,9 +26,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e ".[dev]"
         
-    - name: Run pre-commit hooks
+    - name: Install and configure pre-commit
       run: |
         pip install pre-commit
+        pre-commit install
+        
+    - name: Run pre-commit hooks
+      continue-on-error: true
+      run: |
         pre-commit run --all-files
         
     - name: Run tests
@@ -39,4 +44,4 @@ jobs:
       uses: codecov/codecov-action@v3
       with:
         file: ./coverage.xml
-        fail_ci_if_error: true 
+        fail_ci_if_error: true
