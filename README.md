@@ -2,165 +2,104 @@
 
 **Recipify** is a powerful receipt data extraction tool that combines **YOLO11** for object detection and **Tesseract OCR** for text recognition. It automatically extracts key information from receipt images, such as vendor names, total amounts, items, and dates, to help you keep track of your expenses.
 
----
+[![CI](https://github.com/subhashhhhhh/Recipify/actions/workflows/ci.yml/badge.svg)](https://github.com/subhashhhhhh/Recipify/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/subhashhhhhh/Recipify/branch/main/graph/badge.svg)](https://codecov.io/gh/subhashhhhhh/Recipify)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## **Features**
-- **YOLO11 Object Detection**: Detects receipt elements like shop names, total amounts, dates, and items.
-- **Tesseract OCR**: Extracts textual data from the receipt images.
-- **Advanced Preprocessing**: Enhances image quality for better OCR and object detection.
-- **Dataset Conversion**: Converts annotated receipt datasets into YOLO format for training.
-- **CLI Support**: Easy-to-use command-line interface for running the demo.
+- **YOLO11 Object Detection**: Detects receipt elements like shop names, total amounts, dates, and items
+- **Tesseract OCR**: Extracts textual data from receipt images
+- **Advanced Preprocessing**: Enhances image quality for better OCR and object detection
+- **Multiple Receipt Types**: Supports Walmart, Cafeteria, and other receipt formats
+- **Data Validation**: Ensures extracted data accuracy with Pydantic models
+- **Comprehensive Logging**: Detailed logging with rotation and formatting
+- **Type Safety**: Full type hints and runtime checking
+- **Extensive Testing**: Comprehensive test suite with high coverage
 
----
+## **Installation**
 
-## **Setup and Installation**
+### **From PyPI**
+```bash
+pip install recipify
+```
 
-### **1. Clone the Repository**
+### **From Source**
 ```bash
 git clone https://github.com/subhashhhhhh/Recipify.git
 cd Recipify
+pip install -e ".[dev]"  # Install with development dependencies
 ```
 
-### **2. Set Up a Virtual Environment**
-Create and activate a Python virtual environment:
+## **Quick Start**
+
+```python
+from recipify import parse_receipt_data
+
+# Extract data from receipt text
+receipt_text = """
+Walmart
+Apple          1.99
+Banana         0.99
+TOTAL          2.98
+03/15/24
+14:30
+"""
+
+result = parse_receipt_data(receipt_text)
+print(result)
+```
+
+## **Development Setup**
+
+1. **Create Virtual Environment**
 ```bash
-python -m venv recipify_env
-source recipify_env/bin/activate  # On Windows: recipify_env\Scripts\activate
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-### **3. Install Recipify**
-Install the project and its dependencies:
+2. **Install Dependencies**
 ```bash
-pip install -e .
+pip install -e ".[dev]"
 ```
 
----
-
-## **Usage**
-
-### **1. Run the Demo**
-To process a receipt image and extract details:
+3. **Setup Pre-commit Hooks**
 ```bash
-recipify-demo --image <path_to_receipt_image> --weights <path_to_yolo_weights>
+pre-commit install
 ```
 
-Example:
+4. **Run Tests**
 ```bash
-recipify-demo --image example_receipt.jpg --weights yolo11n.pt
+pytest
 ```
 
-### **2. Train the YOLO11 Model**
-If you want to train YOLO11 on a custom dataset:
-1. Ensure your dataset is structured as follows:
-   ```
-   dataset/
-   ├── train/
-   │   ├── images/
-   │   └── labels/
-   ├── val/
-   │   ├── images/
-   │   └── labels/
-   ```
+## **Configuration**
 
-2. Update `dataset.yaml`:
-   ```yaml
-   train: dataset/train/images
-   val: dataset/val/images
-   nc: 5
-   names: ['shop', 'item', 'total', 'date_time', 'receipt']
-   ```
+Recipify can be configured using environment variables:
 
-3. Train the model:
-   ```bash
-   python -m ultralytics.yolo train --data dataset.yaml --weights yolo11n.pt --epochs 50
-   ```
-
----
-
-## **Folder Structure**
-```
-Recipify/
-├── recipify/
-│   ├── __init__.py
-│   ├── preprocessing.py       # Image preprocessing for OCR
-│   ├── ocr.py                 # Text extraction using Tesseract
-│   ├── classification.py      # Receipt type classification
-│   ├── extraction.py          # Data parsing and extraction
-│   ├── dataset_processing.py  # Convert annotations to YOLO format
-│   ├── train.py
-│   ├── dataset.yaml
-├── dataset/                   # Custom dataset (images and labels)
-├── requirements.txt           # Python dependencies
-├── setup.py                   # Installation configuration
-└── README.md                  # Project documentation
-```
-
----
-
-## **Model Evaluation**
-
-### **Confusion Matrix**
-![Confusion Matrix](runs/detect/train2/confusion_matrix_normalized.png)
-
-### **Precision-Recall Curve**
-![Precision-Recall Curve](runs/detect/train2/PR_curve.png)
-
-### **F1-Score Curve**
-![F1-Score Curve](runs/detect/train2/F1_curve.png)
-
-### **Loss Curves**
-![Box Loss](runs/detect/train2/results.png)
-
----
-
-## **Development and Contribution**
-
-### **Testing**
-- Run tests with `pytest`:
-  ```bash
-  pytest
-  ```
-
-### **Contributions**
-Contributions are welcome! To contribute:
-1. Fork the repository.
-2. Create a new branch:
-   ```bash
-   git checkout -b feature-branch
-   ```
-3. Commit your changes:
-   ```bash
-   git commit -m "Add a new feature"
-   ```
-4. Push the branch:
-   ```bash
-   git push origin feature-branch
-   ```
-5. Open a pull request.
-
----
-
-## **Dependencies**
-- **Python 3.9+**
-- **YOLO11**: Ultralytics for object detection.
-- **Tesseract OCR**: For text extraction.
-- **SpaCy**: For named entity recognition (NER).
-- **OpenCV**: For image preprocessing.
-
-Install all dependencies via:
 ```bash
-pip install -r requirements.txt
+export RECIPIFY_LOG_LEVEL=DEBUG
+export RECIPIFY_TESSERACT_CMD=/usr/local/bin/tesseract
 ```
 
----
+See `recipify/config/settings.py` for all available settings.
 
-## **Acknowledgments**
-- **Ultralytics**: For the YOLO11 model.
-- **Google**: For Tesseract OCR.
-- **OpenCV**: For powerful image processing capabilities.
-- **Community**: For contributing open datasets for receipts.
+## **Contributing**
 
----
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests and linting
+```bash
+pytest
+pre-commit run --all-files
+```
+5. Submit a pull request
 
 ## **License**
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## **Acknowledgments**
+- Ultralytics for YOLO11
+- Google for Tesseract OCR
+- The Python community for excellent tools and libraries
